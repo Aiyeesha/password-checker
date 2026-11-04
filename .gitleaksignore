@@ -1,0 +1,7 @@
+# Faux positifs Gitleaks examinés et acceptés.
+# Format : <commit>:<fichier>:<règle>:<ligne>
+#
+# Empreinte SHA-1 publique du mot « password » (vecteur de test de l'API Pwned
+# Passwords). Ce n'est pas une clé ni un secret. Examiné le 2026-11-04.
+dcbe108cc437e58187b94325dcab46ea973eeb57:tests/test_pwned.py:generic-api-key:16
+
