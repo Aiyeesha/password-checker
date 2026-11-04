@@ -1,0 +1,11 @@
+{
+  // Configuration de CONSTRUCTION (npm run build) : uniquement le code du navigateur
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "rootDir": "src",
+    "outDir": "dist",              // fichiers .js générés, publiés sur GitHub Pages (étape 7.4)
+    "types": []                    // aucun type Node.js dans le code destiné au navigateur
+  },
+  "include": ["src/**/*.ts"]
+}

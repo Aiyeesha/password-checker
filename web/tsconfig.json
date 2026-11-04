@@ -1,0 +1,19 @@
+{
+  // Configuration de VÉRIFICATION (npm run typecheck) : code source + tests
+  "compilerOptions": {
+    "target": "ES2022",                       // syntaxe moderne, comprise par tous les navigateurs actuels
+    "module": "nodenext",                     // modules ES, résolution identique à Node.js
+    "strict": true,                           // tous les contrôles stricts de TypeScript
+    "noUncheckedIndexedAccess": true,         // tab[i] peut être undefined : TypeScript l'impose
+    "exactOptionalPropertyTypes": true,
+    "erasableSyntaxOnly": true,               // interdit enum/namespace : Node.js doit pouvoir EFFACER les types
+    "verbatimModuleSyntax": true,             // « import type » explicite pour les imports de types
+    "allowImportingTsExtensions": true,       // imports « ./patterns.ts », requis pour Node.js
+    "rewriteRelativeImportExtensions": true,  // à la compilation, « .ts » devient « .js » pour le navigateur
+    "lib": ["ES2022", "DOM"],
+    "types": ["node"],
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*.ts", "tests/**/*.ts"]
+}

@@ -1,0 +1,471 @@
+{
+  "description": "Cas de test communs aux moteurs Python et TypeScript. Généré par scripts/generate_test_vectors.py — ne pas modifier à la main.",
+  "tolerance_bits": 0.01,
+  "cases": [
+    {
+      "password": "",
+      "length": 0,
+      "classes": [],
+      "pool_size": 0,
+      "entropy_bits": 0.0,
+      "effective_entropy_bits": 0.0,
+      "is_common": false,
+      "patterns": [],
+      "score": 0
+    },
+    {
+      "password": "abc",
+      "length": 3,
+      "classes": [
+        "minuscules"
+      ],
+      "pool_size": 26,
+      "entropy_bits": 14.1,
+      "effective_entropy_bits": 6.7,
+      "is_common": false,
+      "patterns": [
+        {
+          "kind": "suite",
+          "start": 0,
+          "length": 3
+        }
+      ],
+      "score": 0
+    },
+    {
+      "password": "Zx9!Qw2",
+      "length": 7,
+      "classes": [
+        "chiffres",
+        "majuscules",
+        "minuscules",
+        "symboles"
+      ],
+      "pool_size": 95,
+      "entropy_bits": 45.99,
+      "effective_entropy_bits": 45.99,
+      "is_common": false,
+      "patterns": [],
+      "score": 0
+    },
+    {
+      "password": "abcdefghij",
+      "length": 10,
+      "classes": [
+        "minuscules"
+      ],
+      "pool_size": 26,
+      "entropy_bits": 47.0,
+      "effective_entropy_bits": 13.7,
+      "is_common": false,
+      "patterns": [
+        {
+          "kind": "suite",
+          "start": 0,
+          "length": 10
+        }
+      ],
+      "score": 0
+    },
+    {
+      "password": "motdepasse",
+      "length": 10,
+      "classes": [
+        "minuscules"
+      ],
+      "pool_size": 26,
+      "entropy_bits": 47.0,
+      "effective_entropy_bits": 10.0,
+      "is_common": true,
+      "patterns": [
+        {
+          "kind": "dictionnaire",
+          "start": 0,
+          "length": 10
+        }
+      ],
+      "score": 0
+    },
+    {
+      "password": "P@ssw0rd",
+      "length": 8,
+      "classes": [
+        "chiffres",
+        "majuscules",
+        "minuscules",
+        "symboles"
+      ],
+      "pool_size": 95,
+      "entropy_bits": 52.56,
+      "effective_entropy_bits": 10.0,
+      "is_common": true,
+      "patterns": [
+        {
+          "kind": "dictionnaire",
+          "start": 0,
+          "length": 8
+        }
+      ],
+      "score": 0
+    },
+    {
+      "password": "AZERTY",
+      "length": 6,
+      "classes": [
+        "majuscules"
+      ],
+      "pool_size": 26,
+      "entropy_bits": 28.2,
+      "effective_entropy_bits": 10.0,
+      "is_common": true,
+      "patterns": [
+        {
+          "kind": "dictionnaire",
+          "start": 0,
+          "length": 6
+        }
+      ],
+      "score": 0
+    },
+    {
+      "password": "motdepassesecret",
+      "length": 16,
+      "classes": [
+        "minuscules"
+      ],
+      "pool_size": 26,
+      "entropy_bits": 75.21,
+      "effective_entropy_bits": 25.85,
+      "is_common": false,
+      "patterns": [
+        {
+          "kind": "dictionnaire",
+          "start": 0,
+          "length": 10
+        },
+        {
+          "kind": "dictionnaire",
+          "start": 10,
+          "length": 6
+        }
+      ],
+      "score": 0
+    },
+    {
+      "password": "Soleil2026!",
+      "length": 11,
+      "classes": [
+        "chiffres",
+        "majuscules",
+        "minuscules",
+        "symboles"
+      ],
+      "pool_size": 95,
+      "entropy_bits": 72.27,
+      "effective_entropy_bits": 45.77,
+      "is_common": false,
+      "patterns": [
+        {
+          "kind": "dictionnaire",
+          "start": 0,
+          "length": 6
+        }
+      ],
+      "score": 0
+    },
+    {
+      "password": "Tr0ub4dour&3xyz",
+      "length": 15,
+      "classes": [
+        "chiffres",
+        "majuscules",
+        "minuscules",
+        "symboles"
+      ],
+      "pool_size": 95,
+      "entropy_bits": 98.55,
+      "effective_entropy_bits": 87.41,
+      "is_common": false,
+      "patterns": [
+        {
+          "kind": "suite",
+          "start": 12,
+          "length": 3
+        }
+      ],
+      "score": 2
+    },
+    {
+      "password": "correct horse battery staple",
+      "length": 28,
+      "classes": [
+        "minuscules",
+        "symboles"
+      ],
+      "pool_size": 59,
+      "entropy_bits": 164.71,
+      "effective_entropy_bits": 69.35,
+      "is_common": false,
+      "patterns": [
+        {
+          "kind": "dictionnaire",
+          "start": 0,
+          "length": 7
+        },
+        {
+          "kind": "dictionnaire",
+          "start": 8,
+          "length": 5
+        },
+        {
+          "kind": "dictionnaire",
+          "start": 14,
+          "length": 7
+        },
+        {
+          "kind": "dictionnaire",
+          "start": 22,
+          "length": 6
+        }
+      ],
+      "score": 1
+    },
+    {
+      "password": "q7#Lm2!vXp9@Rt4z",
+      "length": 16,
+      "classes": [
+        "chiffres",
+        "majuscules",
+        "minuscules",
+        "symboles"
+      ],
+      "pool_size": 95,
+      "entropy_bits": 105.12,
+      "effective_entropy_bits": 105.12,
+      "is_common": false,
+      "patterns": [],
+      "score": 3
+    },
+    {
+      "password": "Xq#aaaa",
+      "length": 7,
+      "classes": [
+        "majuscules",
+        "minuscules",
+        "symboles"
+      ],
+      "pool_size": 85,
+      "entropy_bits": 44.87,
+      "effective_entropy_bits": 28.64,
+      "is_common": false,
+      "patterns": [
+        {
+          "kind": "répétition",
+          "start": 3,
+          "length": 4
+        }
+      ],
+      "score": 0
+    },
+    {
+      "password": "Xq#abcd",
+      "length": 7,
+      "classes": [
+        "majuscules",
+        "minuscules",
+        "symboles"
+      ],
+      "pool_size": 85,
+      "entropy_bits": 44.87,
+      "effective_entropy_bits": 28.64,
+      "is_common": false,
+      "patterns": [
+        {
+          "kind": "suite",
+          "start": 3,
+          "length": 4
+        }
+      ],
+      "score": 0
+    },
+    {
+      "password": "Xq#4321",
+      "length": 7,
+      "classes": [
+        "chiffres",
+        "majuscules",
+        "minuscules",
+        "symboles"
+      ],
+      "pool_size": 95,
+      "entropy_bits": 45.99,
+      "effective_entropy_bits": 29.28,
+      "is_common": false,
+      "patterns": [
+        {
+          "kind": "suite",
+          "start": 3,
+          "length": 4
+        }
+      ],
+      "score": 0
+    },
+    {
+      "password": "Xq#qsdf",
+      "length": 7,
+      "classes": [
+        "majuscules",
+        "minuscules",
+        "symboles"
+      ],
+      "pool_size": 85,
+      "entropy_bits": 44.87,
+      "effective_entropy_bits": 28.64,
+      "is_common": false,
+      "patterns": [
+        {
+          "kind": "clavier",
+          "start": 3,
+          "length": 4
+        }
+      ],
+      "score": 0
+    },
+    {
+      "password": "Xq#s0l3il",
+      "length": 9,
+      "classes": [
+        "chiffres",
+        "majuscules",
+        "minuscules",
+        "symboles"
+      ],
+      "pool_size": 95,
+      "entropy_bits": 59.13,
+      "effective_entropy_bits": 32.63,
+      "is_common": false,
+      "patterns": [
+        {
+          "kind": "dictionnaire",
+          "start": 3,
+          "length": 6
+        }
+      ],
+      "score": 0
+    },
+    {
+      "password": "azertyuiop1234aaa",
+      "length": 17,
+      "classes": [
+        "chiffres",
+        "minuscules"
+      ],
+      "pool_size": 36,
+      "entropy_bits": 87.89,
+      "effective_entropy_bits": 36.43,
+      "is_common": false,
+      "patterns": [
+        {
+          "kind": "dictionnaire",
+          "start": 0,
+          "length": 6
+        },
+        {
+          "kind": "clavier",
+          "start": 6,
+          "length": 4
+        },
+        {
+          "kind": "suite",
+          "start": 10,
+          "length": 4
+        },
+        {
+          "kind": "répétition",
+          "start": 14,
+          "length": 3
+        }
+      ],
+      "score": 0
+    },
+    {
+      "password": "é",
+      "length": 1,
+      "classes": [
+        "autres"
+      ],
+      "pool_size": 100,
+      "entropy_bits": 6.64,
+      "effective_entropy_bits": 6.64,
+      "is_common": false,
+      "patterns": [],
+      "score": 0
+    },
+    {
+      "password": "Ça-va-très-bien-merci-2026",
+      "length": 26,
+      "classes": [
+        "autres",
+        "chiffres",
+        "minuscules",
+        "symboles"
+      ],
+      "pool_size": 169,
+      "entropy_bits": 192.42,
+      "effective_entropy_bits": 192.42,
+      "is_common": false,
+      "patterns": [],
+      "score": 3
+    },
+    {
+      "password": "🔐🔐🔐Kx9#mP2!",
+      "length": 11,
+      "classes": [
+        "autres",
+        "chiffres",
+        "majuscules",
+        "minuscules",
+        "symboles"
+      ],
+      "pool_size": 195,
+      "entropy_bits": 83.68,
+      "effective_entropy_bits": 70.47,
+      "is_common": false,
+      "patterns": [
+        {
+          "kind": "répétition",
+          "start": 0,
+          "length": 3
+        }
+      ],
+      "score": 1
+    },
+    {
+      "password": "XYZ-tuv-Q8!m",
+      "length": 12,
+      "classes": [
+        "chiffres",
+        "majuscules",
+        "minuscules",
+        "symboles"
+      ],
+      "pool_size": 95,
+      "entropy_bits": 78.84,
+      "effective_entropy_bits": 56.56,
+      "is_common": false,
+      "patterns": [
+        {
+          "kind": "suite",
+          "start": 0,
+          "length": 3
+        },
+        {
+          "kind": "suite",
+          "start": 4,
+          "length": 3
+        }
+      ],
+      "score": 1
+    }
+  ]
+}
