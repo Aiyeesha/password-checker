@@ -28,7 +28,7 @@ jobs:
 
         steps:
             - name: Récupérer le code
-              uses: actions/checkout@v5
+              uses: actions/checkout@v7
               with:
                   # Le jeton d'accès n'est pas conservé après la récupération du code
                   persist-credentials: false
