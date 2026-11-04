@@ -1,0 +1,41 @@
+# ─────────────────────────────────────────────────────────────
+# 1. Outil de construction du paquet
+# ─────────────────────────────────────────────────────────────
+# Indique à pip comment installer le projet : ici avec setuptools,
+# l'outil standard le plus répandu
+[build-system]
+license = { text = "MIT" }
+build-backend = "setuptools.build_meta"
+
+# ─────────────────────────────────────────────────────────────
+# 2. Description du projet
+# ─────────────────────────────────────────────────────────────
+[project]
+name = "password-checker"
+version = "0.1.0"                  # Versionnage sémantique : MAJEUR.MINEUR.CORRECTIF
+description = "Analyse de la robustesse des mots de passe et détection des fuites (k-anonymité HIBP)"
+readme = "README.md"
+requires-python = ">=3.11"         # Refuse l'installation sur un Python trop ancien
+license = { text = "MIT" }
+authors = [{ name = "Aïcha Imène Dahoumane" }]
+
+# Dépendances nécessaires au fonctionnement : aucune pour l'instant.
+# « requests » sera ajouté à l'étape sur l'API Have I Been Pwned.
+dependencies = []
+
+# Dépendances utiles seulement pour développer (installées avec « .[dev] »)
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+# ─────────────────────────────────────────────────────────────
+# 3. Emplacement du code
+# ─────────────────────────────────────────────────────────────
+# Le paquet se trouve dans src/ (voir l'explication plus haut)
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# ─────────────────────────────────────────────────────────────
+# 4. Configuration de pytest
+# ─────────────────────────────────────────────────────────────
+[tool.pytest.ini_options]
+testpaths = ["tests"]              # pytest ne cherche les tests que dans ce dossier
