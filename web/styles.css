@@ -1,0 +1,265 @@
+/* ─────────────────────────────────────────────────────────────
+   Password Checker — feuille de style unique
+   Thème : un dossier « caviardé ». Les caractères du mot de passe ne
+   sont jamais montrés ; ils deviennent des barres, comme un texte
+   masqué. Ce qui est devinable apparaît en rouge, avec une trame
+   différente par type de motif (lisible sans distinguer les couleurs).
+   Polices système uniquement : aucune requête vers un service tiers.
+   ───────────────────────────────────────────────────────────── */
+
+/* 1. Jetons de couleur — thème clair par défaut */
+:root {
+  --paper: #eef2f6;      /* fond : gris bleuté froid, papier administratif */
+  --surface: #ffffff;
+  --ink: #13203a;        /* encre bleu nuit : texte et barres caviardées */
+  --muted: #4c586d;
+  --rule: #c7d0dc;
+  --cobalt: #1f5ae0;     /* ce qui QUITTE l'appareil : le préfixe envoyé */
+  --risk: #b3261e;       /* ce qui est DEVINABLE : les motifs */
+  --level-0: #b3261e;
+  --level-1: #9a5300;
+  --level-2: #1e7a46;
+  --level-3: #135c35;
+  --focus: #1f5ae0;
+  --radius: 6px;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "Cascadia Mono", "SF Mono", Consolas, monospace;
+  color-scheme: light;
+}
+
+/* Thème sombre automatique, selon le réglage du système */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #0e1524;
+    --surface: #16203a;
+    --ink: #e4e9f2;
+    --muted: #a6b1c5;
+    --rule: #2c3958;
+    --cobalt: #86a9ff;
+    --risk: #ff8f85;
+    --level-0: #ff8f85;
+    --level-1: #f5b55c;
+    --level-2: #6fd39a;
+    --level-3: #8fe3b4;
+    --focus: #86a9ff;
+    color-scheme: dark;
+  }
+}
+
+/* 2. Base */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 1.0625rem/1.55 var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+main, .top, .foot {
+  width: min(100% - 2rem, 44rem);   /* colonne de lecture, marge de 1 rem sur mobile */
+  margin-inline: auto;
+}
+
+h1 {
+  font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  font-weight: 750;
+  margin: 1.25rem 0 0.75rem;
+  max-width: 20ch;
+  text-wrap: balance;
+}
+
+h2 {
+  font-size: 1.35rem;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.75rem;
+}
+
+h3 { font-size: 1.05rem; margin: 1.75rem 0 0.5rem; }
+
+p { margin: 0 0 0.75rem; max-width: 68ch; }
+
+a { color: var(--cobalt); text-underline-offset: 0.18em; }
+
+/* Focus clavier toujours visible */
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+.hint { color: var(--muted); font-size: 0.95rem; }
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}
+
+.skip {
+  position: absolute; left: 1rem; top: -3rem;
+  background: var(--ink); color: var(--paper); padding: 0.5rem 0.75rem; border-radius: var(--radius);
+}
+.skip:focus { top: 1rem; }
+
+/* 3. En-tête */
+.top {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.25rem 0 0;
+}
+.brand { font-weight: 700; letter-spacing: -0.01em; }
+
+.langs { display: flex; gap: 0.25rem; }
+.langs button {
+  font: inherit; font-size: 0.9rem; font-weight: 600;
+  min-width: 2.75rem; min-height: 2.25rem;
+  border: 1px solid var(--rule); border-radius: var(--radius);
+  background: transparent; color: var(--muted); cursor: pointer;
+}
+.langs button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
+/* 4. Avertissement : un trait épais à gauche, comme une mention en marge */
+.warning {
+  margin: 1.5rem 0 0;
+  padding: 0.6rem 0.9rem;
+  border-left: 4px solid var(--risk);
+  background: var(--surface);
+  font-weight: 600;
+}
+
+.intro { color: var(--muted); }
+
+section { margin-top: 2.25rem; }
+
+/* 5. Saisie */
+.entry label { display: block; font-weight: 650; margin-bottom: 0.4rem; }
+.field { display: flex; gap: 0.5rem; }
+.field input {
+  flex: 1; min-width: 0;
+  font: 1.25rem/1.2 var(--mono); letter-spacing: 0.04em;
+  padding: 0.8rem 0.9rem;
+  color: var(--ink); background: var(--surface);
+  border: 2px solid var(--ink); border-radius: var(--radius);
+}
+.field button, .primary {
+  font: inherit; font-weight: 650; cursor: pointer;
+  padding: 0.7rem 1rem; border-radius: var(--radius);
+}
+.field button { background: transparent; color: var(--ink); border: 2px solid var(--rule); }
+.entry .hint { margin-top: 0.4rem; }
+
+/* 6. Carte des motifs : une case par caractère, jamais le caractère */
+.map {
+  display: flex; flex-wrap: wrap; gap: 4px;
+  min-height: 2.25rem; margin: 0.25rem 0 0.5rem;
+}
+.tile {
+  display: inline-block; width: 1.05rem; height: 2rem; border-radius: 2px;
+  background: var(--ink);                                 /* caractère imprévisible : barre caviardée */
+}
+.tile.is-word { background: var(--risk); }                  /* mot courant : aplat plein */
+.tile.is-keyboard {                                         /* touches voisines : hachures diagonales */
+  background: repeating-linear-gradient(135deg, var(--risk) 0 3px, transparent 3px 6px);
+  box-shadow: inset 0 0 0 2px var(--risk);
+}
+.tile.is-sequence {                                         /* suite : points */
+  background: radial-gradient(circle, var(--risk) 1.6px, transparent 1.9px) 0 0 / 6px 6px;
+  box-shadow: inset 0 0 0 2px var(--risk);
+}
+.tile.is-repeat {                                           /* répétition : lignes horizontales */
+  background: repeating-linear-gradient(0deg, var(--risk) 0 2px, transparent 2px 5px);
+  box-shadow: inset 0 0 0 2px var(--risk);
+}
+
+.legend {
+  display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem;
+  list-style: none; padding: 0; margin: 0.25rem 0 0;
+  font-size: 0.9rem; color: var(--muted);
+}
+.legend li { display: inline-flex; align-items: center; gap: 0.4rem; }
+.legend .tile { width: 0.8rem; height: 1.1rem; }
+
+/* 7. Verdict */
+.verdict { margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
+.level {
+  font-size: clamp(2rem, 1.4rem + 2.6vw, 2.9rem); font-weight: 780;
+  letter-spacing: -0.025em; line-height: 1; margin: 0 0 0.6rem;
+  color: var(--muted);
+}
+.verdict[data-score="0"] .level { color: var(--level-0); }
+.verdict[data-score="1"] .level { color: var(--level-1); }
+.verdict[data-score="2"] .level { color: var(--level-2); }
+.verdict[data-score="3"] .level { color: var(--level-3); }
+
+.meter { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; max-width: 22rem; }
+.meter span { height: 0.5rem; border-radius: 2px; background: var(--rule); }
+.verdict[data-score="0"] .meter .on { background: var(--level-0); }
+.verdict[data-score="1"] .meter .on { background: var(--level-1); }
+.verdict[data-score="2"] .meter .on { background: var(--level-2); }
+.verdict[data-score="3"] .meter .on { background: var(--level-3); }
+.entropy { margin-top: 0.6rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.advice { padding-left: 1.2rem; margin: 0; }
+.advice li { margin-bottom: 0.35rem; max-width: 66ch; }
+
+/* 8. Fuites : l'empreinte en 40 cases, 5 envoyées, 35 gardées */
+.leak { padding-top: 2rem; border-top: 1px solid var(--rule); }
+.hash-figure { margin: 1.25rem 0 1rem; }
+.hash-labels {
+  display: grid; grid-template-columns: calc(5 * (1.6rem + 3px)) 1fr;
+  gap: 0.75rem; font-size: 0.85rem; font-weight: 650; margin-bottom: 0.35rem;
+}
+.label-sent { color: var(--cobalt); }
+.label-kept { color: var(--muted); }
+
+.hash { display: flex; flex-wrap: wrap; gap: 3px; }
+.hx {
+  width: 1.6rem; height: 2.1rem; border-radius: 3px;
+  display: inline-grid; place-items: center;
+  font: 700 1rem var(--mono);
+}
+.hx.sent { border: 2px solid var(--cobalt); color: var(--cobalt); background: var(--surface); }
+.hx.sent:nth-child(5) { margin-right: 0.75rem; }            /* sépare visuellement préfixe et suffixe */
+.hx.kept { background: var(--ink); opacity: 0.88; }
+
+/* Le seul mouvement de la page : les 5 caractères envoyés apparaissent un par un */
+.hx.revealed { animation: reveal 260ms ease-out both; animation-delay: calc(var(--i) * 70ms); }
+@keyframes reveal {
+  from { transform: translateY(-6px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hx.revealed { animation: none; }
+}
+
+.primary { background: var(--ink); color: var(--paper); border: 2px solid var(--ink); }
+.primary:disabled { opacity: 0.6; cursor: progress; }
+
+.leak-result { margin-top: 1rem; }
+.leak-result p { margin: 0 0 0.3rem; }
+.leak-result[data-state="found"] p:first-child { color: var(--level-0); font-weight: 750; font-size: 1.2rem; }
+.leak-result[data-state="absent"] p:first-child { color: var(--level-2); font-weight: 650; }
+.leak-result[data-state="error"], .leak-result[data-state="stale"], .leak-result[data-state="need-password"] { color: var(--muted); }
+
+/* 9. Explications */
+.notes {
+  display: grid; gap: 2rem; grid-template-columns: 1fr;
+  padding-top: 2rem; border-top: 1px solid var(--rule);
+  font-size: 0.97rem;
+}
+.notes ol, .notes ul { padding-left: 1.2rem; margin: 0; }
+.notes li { margin-bottom: 0.5rem; }
+@media (min-width: 46rem) { .notes { grid-template-columns: 3fr 2fr; } }
+
+.foot {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 1.5rem;
+  margin-top: 3rem; padding: 1.25rem 0 2.5rem; border-top: 1px solid var(--rule);
+  font-size: 0.9rem; color: var(--muted);
+}
+
+/* Mobile : les cases de l'empreinte rétrécissent pour tenir sur deux lignes */
+@media (max-width: 30rem) {
+  .hx { width: 1.15rem; height: 1.7rem; font-size: 0.8rem; }
+  .hash-labels { grid-template-columns: calc(5 * (1.15rem + 3px)) 1fr; }
+  .field { flex-wrap: wrap; }
+  .field button { flex: 1; }
+}

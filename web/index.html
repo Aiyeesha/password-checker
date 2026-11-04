@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!--
+    Politique de sécurité du contenu (CSP), déclarée ici car GitHub Pages ne permet
+    pas d'envoyer d'en-têtes HTTP personnalisés :
+      default-src 'none'   tout est interdit par défaut ;
+      script-src 'self'    seuls les scripts de ce site s'exécutent (aucun script en ligne) ;
+      style-src 'self'     seule la feuille de style de ce site s'applique ;
+      img-src 'self' data: icône de l'onglet ;
+      connect-src …        UNE seule destination réseau autorisée : l'API Pwned Passwords ;
+      base-uri / form-action 'none'  ni balise <base>, ni envoi de formulaire.
+  -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src https://api.pwnedpasswords.com; base-uri 'none'; form-action 'none'">
+  <!-- Aucune page appelée ne saura d'où vient le visiteur -->
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Analyse la robustesse réelle d'un mot de passe et vérifie s'il a fuité, sans jamais l'envoyer. Analyses the real strength of a password and checks known breaches without ever sending it.">
+
+  <title>Password Checker — robustesse et fuites d'un mot de passe</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2313203A'/%3E%3Crect x='6' y='13' width='4' height='6' fill='%23EEF2F6'/%3E%3Crect x='12' y='13' width='4' height='6' fill='%23EEF2F6'/%3E%3Crect x='18' y='13' width='8' height='6' fill='%231F5AE0'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles.css">
+  <!-- type="module" : chargé après l'analyse de la page, en mode strict -->
+  <script type="module" src="./dist/main.js"></script>
+</head>
+<body>
+  <a class="skip" href="#password" data-i18n="skipLink">Aller au champ de saisie</a>
+
+  <header class="top">
+    <span class="brand">Password Checker</span>
+    <nav class="langs" aria-label="Langue / Language">
+      <button type="button" id="lang-fr" lang="fr" aria-pressed="true">FR</button>
+      <button type="button" id="lang-en" lang="en" aria-pressed="false">EN</button>
+    </nav>
+  </header>
+
+  <main>
+    <p class="warning" role="note" data-i18n="warning">Démonstration : n'écrivez jamais ici un mot de passe que vous utilisez réellement.</p>
+
+    <h1 data-i18n="heading">Votre mot de passe tiendrait-il face à une vraie attaque ?</h1>
+    <p class="intro" data-i18n="intro"></p>
+
+    <noscript><p class="warning">Cette page a besoin de JavaScript : toute l'analyse se fait dans votre navigateur. — This page needs JavaScript: all analysis runs in your browser.</p></noscript>
+
+    <!-- ── Saisie ─────────────────────────────────────────── -->
+    <section class="entry" aria-labelledby="password-label">
+      <label id="password-label" for="password" data-i18n="passwordLabel">Mot de passe à tester</label>
+      <div class="field">
+        <!-- Pas de <form> : rien ne peut être « envoyé », et les gestionnaires de mots de passe ne proposent pas d'enregistrer -->
+        <input id="password" type="password"
+               autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+               aria-describedby="password-hint">
+        <button type="button" id="toggle" aria-controls="password" aria-pressed="false">Afficher</button>
+      </div>
+      <p id="password-hint" class="hint" data-i18n="passwordHint"></p>
+    </section>
+
+    <!-- ── Analyse locale ─────────────────────────────────── -->
+    <section class="analysis" aria-labelledby="map-title">
+      <h2 id="map-title" data-i18n="mapTitle">Ce qu'un attaquant devinerait en premier</h2>
+      <!-- La carte est décorative pour les lecteurs d'écran : le résumé textuel la remplace -->
+      <div id="map" class="map" aria-hidden="true"></div>
+      <p id="map-summary" class="hint" aria-live="polite"></p>
+      <ul id="legend" class="legend"></ul>
+
+      <div id="verdict" class="verdict" data-score="none" aria-live="polite">
+        <p id="level" class="level"></p>
+        <div id="meter" class="meter" aria-hidden="true"></div>
+        <p id="entropy" class="entropy"></p>
+      </div>
+
+      <h3 data-i18n="adviceTitle">Pour le renforcer</h3>
+      <ul id="advice-list" class="advice"></ul>
+    </section>
+
+    <!-- ── Fuites ─────────────────────────────────────────── -->
+    <section class="leak" aria-labelledby="leak-title">
+      <h2 id="leak-title" data-i18n="leakTitle">A-t-il déjà fuité ?</h2>
+      <p data-i18n="leakIntro"></p>
+
+      <figure class="hash-figure">
+        <div class="hash-labels" aria-hidden="true">
+          <span class="label-sent" data-i18n="hashSent">envoyé</span>
+          <span class="label-kept" data-i18n="hashKept">reste sur votre appareil</span>
+        </div>
+        <div id="hash" class="hash" aria-hidden="true"></div>
+        <p id="hash-sr" class="visually-hidden" aria-live="polite"></p>
+        <figcaption class="hint" data-i18n="hashCaption"></figcaption>
+      </figure>
+
+      <button type="button" id="check" class="primary">Vérifier dans les fuites connues</button>
+      <div id="leak-result" class="leak-result" data-state="idle" aria-live="polite"></div>
+    </section>
+
+    <!-- ── Explications ──────────────────────────────────── -->
+    <section class="notes">
+      <div>
+        <h2 data-i18n="howTitle">Comment ça marche</h2>
+        <ol id="how-list"></ol>
+      </div>
+      <div>
+        <h2 data-i18n="limitsTitle">Limites</h2>
+        <ul id="limits-list"></ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <a href="https://github.com/Aiyeesha/password-checker" data-i18n="sourceLink">Code source et version en ligne de commande</a>
+    <span>MIT · Aïcha Imène Dahoumane</span>
+  </footer>
+</body>
+</html>
