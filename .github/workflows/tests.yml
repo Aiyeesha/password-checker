@@ -14,6 +14,7 @@ permissions:
     contents: read
 
 jobs:
+    # ─── Moteur Python (la référence) ─────────────────────────
     tests:
         # Nom affiché dans GitHub, par exemple « Python 3.14 · windows-latest »
         name: Python ${{ matrix.python-version }} · ${{ matrix.os }}
@@ -43,8 +44,47 @@ jobs:
                   python -m pip install --upgrade pip
                   pip install -e ".[dev]"
 
+            # Inclut tests/test_vectors.py : le moteur Python valide shared/test-vectors.json
             - name: Lancer les tests
               run: pytest -v
 
             - name: Vérifier que la commande est bien installée
               run: password-checker --version
+
+    # ─── Moteur TypeScript de l'interface web ─────────────────
+    web:
+        name: Web · Node 24
+        runs-on: ubuntu-latest
+
+        # Toutes les commandes « run » s'exécutent dans le dossier web/
+        defaults:
+            run:
+                working-directory: web
+
+        steps:
+            - name: Récupérer le code
+              uses: actions/checkout@v7
+              with:
+                  persist-credentials: false
+
+            - name: Installer Node.js 24
+              uses: actions/setup-node@v5
+              with:
+                  node-version: 24
+                  # Met en cache les paquets npm, à partir du fichier de verrouillage
+                  cache: npm
+                  cache-dependency-path: web/package-lock.json
+
+            # « npm ci » installe EXACTEMENT les versions du package-lock.json (reproductible)
+            - name: Installer les dépendances
+              run: npm ci
+
+            - name: Vérifier les types
+              run: npm run typecheck
+
+            # Inclut web/tests/vectors.test.ts : même fichier de cas que le moteur Python
+            - name: Lancer les tests
+              run: npm test
+
+            - name: Construire les fichiers du navigateur
+              run: npm run build

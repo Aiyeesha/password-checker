@@ -30,3 +30,7 @@ Thumbs.db
 # Ils contiennent des identifiants d'org et n'ont rien à faire dans un projet Python
 .sf/
 .sfdx/
+# --- Interface web (Node.js) ---
+# Paquets npm : se réinstallent avec « npm ci » à partir de web/package-lock.json
+node_modules/
+# (web/dist/ est déjà couvert par la règle « dist/ » plus haut)
