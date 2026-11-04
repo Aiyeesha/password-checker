@@ -13,7 +13,7 @@ import pytest
 from password_checker import pwned
 
 # Empreinte SHA-1 connue de « password » (vecteur de référence)
-SHA1_PASSWORD = "5BAA61E4C9B93F3F0682250B6CF8331B7EE68FD8"
+SHA1_PASSWORD = "5BAA61E4C9B93F3F0682250B6CF8331B7EE68FD8"  # gitleaks:allow (vecteur de test public : SHA-1 de « password »)
 
 
 # ─── Empreinte et découpage ────────────────────────────────────
