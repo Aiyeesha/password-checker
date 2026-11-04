@@ -1,5 +1,6 @@
 """
-Moteur d'analyse de robustesse — étape 2 : longueur, familles de caractères, entropie.
+Moteur d'analyse de robustesse — étapes 2 et 3 : longueur, familles de
+caractères, entropie théorique et entropie effective.
 
 Ce module évalue un mot de passe SANS jamais le conserver : le rapport produit
 ne contient que des mesures (longueur, familles, entropie, score), jamais le
@@ -11,10 +12,11 @@ Références utilisées pour les seuils :
 - NIST SP 800-63B-4 : 15 caractères minimum pour un mot de passe utilisé seul,
   8 caractères minimum s'il fait partie d'une authentification multifacteur.
 
-Limite assumée à cette étape : l'entropie calculée ici est THÉORIQUE. Elle
-suppose des caractères tirés au hasard, ce qui surestime les mots de passe
-humains (« motdepasse » n'a rien d'aléatoire). L'étape 3 corrigera cela en
-pénalisant les mots du dictionnaire, les suites et les répétitions.
+Deux entropies sont calculées :
+- l'entropie THÉORIQUE (étape 2), qui suppose des caractères tirés au hasard ;
+- l'entropie EFFECTIVE (étape 3), corrigée des motifs faibles détectés par
+  le module patterns (dictionnaire, clavier, suites, répétitions, leet speak).
+Le score repose sur l'entropie effective, la seule qui reflète une vraie attaque.
 """
 
 # Permet d'écrire les annotations de type sous forme moderne (ex. tuple[str, ...])
@@ -23,6 +25,14 @@ from __future__ import annotations
 import math                         # log2 pour le calcul d'entropie
 import string                       # alphabets prédéfinis (a-z, A-Z, 0-9, ponctuation)
 from dataclasses import dataclass   # structure de données immuable pour le rapport
+
+# Détection des motifs faibles (étape 3)
+from password_checker.patterns import (
+    PatternMatch,
+    effective_entropy,
+    find_patterns,
+    is_common_password,
+)
 
 # ─────────────────────────────────────────────────────────────
 # 1. Familles de caractères reconnues
@@ -64,7 +74,10 @@ class StrengthReport:
     length: int                    # nombre de caractères
     classes: frozenset[str]        # familles présentes (ex. {"minuscules", "chiffres"})
     pool_size: int                 # taille de l'alphabet correspondant
-    entropy_bits: float            # entropie théorique, en bits
+    entropy_bits: float            # entropie théorique, en bits (étape 2)
+    effective_entropy_bits: float  # entropie corrigée des motifs faibles (étape 3)
+    is_common: bool                # figure dans la liste des mots de passe les plus courants
+    patterns: tuple[PatternMatch, ...]  # motifs faibles (type, position, longueur — jamais le texte)
     score: int                     # de 0 (très faible) à 3 (très fort)
     feedback: tuple[str, ...]      # conseils lisibles, en français
 
@@ -128,12 +141,38 @@ def score_from(entropy: float, length: int) -> int:
     return 3
 
 
-def _build_feedback(length: int, classes: frozenset[str], entropy: float) -> tuple[str, ...]:
+# Message associé à chaque type de motif
+_PATTERN_ADVICE = {
+    "dictionnaire": "Contient un mot courant (même déguisé en leet speak, ex. « P@ssw0rd »).",
+    "clavier": "Contient une suite de touches voisines du clavier (ex. « azer », « qsdf »).",
+    "suite": "Contient une suite logique de caractères (ex. « abc », « 1234 »).",
+    "répétition": "Contient un caractère répété plusieurs fois (ex. « aaa », « 111 »).",
+}
+
+
+def _build_feedback(
+    length: int,
+    classes: frozenset[str],
+    entropy: float,
+    is_common: bool = False,
+    patterns: tuple[PatternMatch, ...] = (),
+) -> tuple[str, ...]:
     """Rédige les conseils. Fonction « privée » (préfixe _) : détail interne du module."""
     messages: list[str] = []
 
     if length == 0:
         return ("Le mot de passe est vide.",)
+
+    # Le pire cas d'abord : un mot de passe de la liste des plus courants
+    if is_common:
+        messages.append(
+            "Mot de passe parmi les plus utilisés au monde : "
+            "il serait trouvé dès les premières secondes d'une attaque."
+        )
+
+    # Un conseil par TYPE de motif trouvé (sans jamais citer le texte concerné)
+    for kind in dict.fromkeys(m.kind for m in patterns):   # dédoublonne en gardant l'ordre
+        messages.append(_PATTERN_ADVICE[kind])
 
     # Conseils sur la longueur (critère le plus efficace)
     if length < NIST_MIN_LENGTH:
@@ -150,7 +189,7 @@ def _build_feedback(length: int, classes: frozenset[str], entropy: float) -> tup
     # Conseils sur l'entropie et les familles absentes
     if entropy < CNIL_STANDALONE_BITS:
         messages.append(
-            f"Entropie de {entropy:.0f} bits, sous les {CNIL_STANDALONE_BITS} bits "
+            f"Entropie estimée à {entropy:.0f} bits, sous les {CNIL_STANDALONE_BITS} bits "
             "recommandés par la CNIL pour un mot de passe utilisé seul."
         )
         missing = [name for name in CHARACTER_CLASSES if name not in classes]
@@ -177,11 +216,20 @@ def analyze(password: str) -> StrengthReport:
     pool = pool_size(classes)
     entropy = entropy_bits(length, pool)
 
+    # Étape 3 : motifs faibles et entropie corrigée
+    common = is_common_password(password)
+    patterns = find_patterns(password)
+    effective = effective_entropy(password, pool, patterns)
+
     return StrengthReport(
         length=length,
         classes=classes,
         pool_size=pool,
         entropy_bits=entropy,
-        score=score_from(entropy, length),
-        feedback=_build_feedback(length, classes, entropy),
+        effective_entropy_bits=effective,
+        is_common=common,
+        patterns=patterns,
+        # Le score repose désormais sur l'entropie EFFECTIVE
+        score=score_from(effective, length),
+        feedback=_build_feedback(length, classes, effective, common, patterns),
     )
