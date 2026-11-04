@@ -4,7 +4,7 @@
 # Indique à pip comment installer le projet : ici avec setuptools,
 # l'outil standard le plus répandu
 [build-system]
-requires = ["setuptools>=77"]      # La version 77 est la première à accepter le format SPDX de la licence
+requires = ["setuptools>=84.2.1"]      # La version 77 est la première à accepter le format SPDX de la licence
 build-backend = "setuptools.build_meta"
 
 # ─────────────────────────────────────────────────────────────
