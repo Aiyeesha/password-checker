@@ -1,0 +1,77 @@
+# ─────────────────────────────────────────────────────────────
+# Déploiement de l'interface web sur GitHub Pages
+# à chaque modification de main (et à la demande).
+# ─────────────────────────────────────────────────────────────
+name: Pages
+
+on:
+    push:
+        branches: [main]
+    workflow_dispatch: # bouton « Run workflow » dans l'onglet Actions
+
+# Droits minimaux : lire le code, publier sur Pages, prouver l'identité du workflow (OIDC)
+permissions:
+    contents: read
+    pages: write
+    id-token: write
+
+# Un seul déploiement à la fois ; on ne coupe jamais un déploiement en cours
+concurrency:
+    group: pages
+    cancel-in-progress: false
+
+jobs:
+    build:
+        name: Construire le site
+        runs-on: ubuntu-latest
+        steps:
+            - name: Récupérer le code
+              uses: actions/checkout@v7
+              with:
+                  persist-credentials: false
+
+            - name: Installer Node.js 24
+              uses: actions/setup-node@v5
+              with:
+                  node-version: 24
+                  cache: npm
+                  cache-dependency-path: web/package-lock.json
+
+            # On reteste avant de publier : un site cassé n'est jamais mis en ligne
+            - name: Installer, tester, construire
+              working-directory: web
+              run: |
+                  npm ci
+                  npm run typecheck
+                  npm test
+                  npm run build
+
+            # Le site publié ne contient QUE ce dont le navigateur a besoin
+            # (ni sources TypeScript, ni tests, ni node_modules)
+            - name: Assembler le site
+              run: |
+                  mkdir -p _site/dist
+                  cp web/index.html web/styles.css _site/
+                  cp web/dist/*.js _site/dist/
+                  ls -R _site
+
+            - name: Configurer Pages
+              uses: actions/configure-pages@v5
+
+            - name: Empaqueter le site
+              uses: actions/upload-pages-artifact@v4
+              with:
+                  path: _site
+
+    deploy:
+        name: Publier
+        needs: build
+        runs-on: ubuntu-latest
+        # L'environnement « github-pages » affiche l'adresse du site dans GitHub
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+        steps:
+            - name: Déployer sur GitHub Pages
+              id: deployment
+              uses: actions/deploy-pages@v4

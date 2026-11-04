@@ -7,6 +7,8 @@
 
 🇬🇧 English · [🇫🇷 Français](README.fr.md)
 
+**▶ Try it in your browser: [aiyeesha.github.io/password-checker/](https://aiyeesha.github.io/password-checker/)** — no installation, nothing sent but 5 hash characters.
+
 A command-line tool that **estimates the real strength of a password** and checks
 **whether it has already leaked** — without ever sending it to anyone.
 
@@ -43,6 +45,20 @@ Local suffix comparison ──► found / not found
 - The password is read through a **masked prompt** (`getpass`): it never appears on screen,
   in the shell history or in the process arguments. There is **deliberately no `--password` flag**.
 - It **never** appears in the output, the JSON or error messages (enforced by tests).
+
+## 🌐 Web interface
+
+A bilingual (EN/FR) page published on GitHub Pages: [aiyeesha.github.io/password-checker/](https://aiyeesha.github.io/password-checker/).
+
+- The analysis engine is a **TypeScript port** of the Python one. Both are checked against the same
+  shared cases (`shared/test-vectors.json`): if they ever diverge, CI fails.
+- Each character is drawn as a tile, never shown: tiles that belong to a guessable pattern are
+  highlighted, with a distinct texture per pattern type (readable without colour).
+- The SHA-1 hash is shown as 40 cells: the 5 that are sent, and the 35 that stay on the device.
+- The breach check only runs **on click** (checking on every keystroke would send the prefix of
+  every partial password).
+- A strict Content Security Policy allows **one** network destination only: `api.pwnedpasswords.com`.
+  No analytics, no third-party scripts or fonts, no storage other than the chosen language.
 
 ## 🚀 Installation
 
@@ -111,6 +127,14 @@ src/password_checker/
 ├── pwned.py      # Pwned Passwords check (k-anonymity) — the only network module
 ├── cli.py        # command-line interface
 └── __main__.py   # enables "python -m password_checker"
+
+web/src/          # browser version (TypeScript)
+├── patterns.ts · strength.ts   # ports of the Python engine
+├── pwned.ts      # k-anonymity with Web Crypto + fetch
+├── i18n.ts       # English and French texts
+└── main.ts       # page logic
+
+shared/test-vectors.json   # cases both engines must agree on
 ```
 
 Analysis logic is **separated** from network access: `strength.py` and `patterns.py` perform no I/O,
@@ -123,6 +147,8 @@ which makes them fully testable.
 - The effective entropy correction values are **documented conventions**, not a standard.
 - The alphabet size for accented or non-Latin characters is an **estimate** (100).
 - Python cannot **reliably wipe** a string from memory: the tool only limits its lifetime.
+- GitHub Pages cannot send custom HTTP headers: the web page declares its Content Security Policy
+  in a `<meta>` tag, where some directives (such as `frame-ancestors`) have no effect.
 - SHA-1 is used **only** because it is the API's format; it must never be used to store passwords
   (use Argon2id, scrypt or bcrypt instead).
 
@@ -131,6 +157,17 @@ which makes them fully testable.
 ```powershell
 pip install -e ".[dev]"
 pytest -v
+```
+
+Web interface (Node.js 24):
+
+```powershell
+cd web
+npm ci
+npm run typecheck
+npm test
+npm run build
+python -m http.server 8000 --bind 127.0.0.1   # then open http://localhost:8000
 ```
 
 - No test calls the Internet: the API and keyboard input are simulated (dependency injection).

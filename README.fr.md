@@ -7,6 +7,8 @@
 
 [🇬🇧 English](README.md) · 🇫🇷 Français
 
+**▶ L'essayer dans le navigateur : [aiyeesha.github.io/password-checker/](https://aiyeesha.github.io/password-checker/?lang=fr)** — sans installation, rien n'est envoyé hormis 5 caractères d'empreinte.
+
 Outil en ligne de commande qui **évalue la robustesse réelle d'un mot de passe** et vérifie
 **s'il a déjà fuité**, sans jamais l'envoyer à qui que ce soit.
 
@@ -42,6 +44,21 @@ Comparaison locale du suffixe ──► trouvé / absent
 - Le mot de passe est saisi de façon **masquée** (`getpass`) : absent de l'écran, de l'historique
   du terminal et des arguments du processus. Il n'existe **volontairement aucune option `--password`**.
 - Il n'apparaît **jamais** dans la sortie, le JSON, ni les messages d'erreur (vérifié par les tests).
+
+## 🌐 Interface web
+
+Une page bilingue (FR/EN) publiée sur GitHub Pages : [aiyeesha.github.io/password-checker/](https://aiyeesha.github.io/password-checker/?lang=fr).
+
+- Le moteur d'analyse est un **portage TypeScript** du moteur Python. Les deux sont vérifiés sur les
+  mêmes cas partagés (`shared/test-vectors.json`) : s'ils divergent un jour, la CI échoue.
+- Chaque caractère est représenté par une case, jamais affiché : les cases qui appartiennent à un
+  motif devinable ressortent, avec une trame différente par type de motif (lisible sans les couleurs).
+- L'empreinte SHA-1 est montrée en 40 cases : les 5 envoyées et les 35 qui restent sur l'appareil.
+- La vérification des fuites ne part **que sur clic** (vérifier à chaque frappe enverrait le préfixe
+  de chaque début de mot de passe).
+- Une politique de sécurité du contenu (CSP) stricte n'autorise qu'**une** destination réseau :
+  `api.pwnedpasswords.com`. Aucune mesure d'audience, aucun script ni police tiers, aucun stockage
+  hormis la langue choisie.
 
 ## 🚀 Installation
 
@@ -110,6 +127,14 @@ src/password_checker/
 ├── pwned.py      # vérification Pwned Passwords (k-anonymité) — seul module réseau
 ├── cli.py        # interface en ligne de commande
 └── __main__.py   # permet « python -m password_checker »
+
+web/src/          # version navigateur (TypeScript)
+├── patterns.ts · strength.ts   # portages du moteur Python
+├── pwned.ts      # k-anonymité avec Web Crypto + fetch
+├── i18n.ts       # textes français et anglais
+└── main.ts       # logique de la page
+
+shared/test-vectors.json   # cas sur lesquels les deux moteurs doivent s'accorder
 ```
 
 La logique d'analyse est **séparée** de l'accès réseau : `strength.py` et `patterns.py` ne font
@@ -123,6 +148,8 @@ aucune entrée/sortie, ce qui les rend entièrement testables.
 - La taille d'alphabet des caractères accentués ou non latins est une **estimation** (100).
 - Python ne permet pas d'**effacer de façon garantie** une chaîne en mémoire : l'outil se contente
   d'en limiter la durée de vie.
+- GitHub Pages ne permet pas d'envoyer d'en-têtes HTTP personnalisés : la page web déclare sa CSP
+  dans une balise `<meta>`, où certaines directives (comme `frame-ancestors`) sont sans effet.
 - SHA-1 est utilisé **uniquement** parce que c'est le format de l'API ; il ne doit jamais servir
   à stocker des mots de passe (utiliser Argon2id, scrypt ou bcrypt).
 
@@ -131,6 +158,17 @@ aucune entrée/sortie, ce qui les rend entièrement testables.
 ```powershell
 pip install -e ".[dev]"
 pytest -v
+```
+
+Interface web (Node.js 24) :
+
+```powershell
+cd web
+npm ci
+npm run typecheck
+npm test
+npm run build
+python -m http.server 8000 --bind 127.0.0.1   # puis ouvrir http://localhost:8000
 ```
 
 - Aucun test n'appelle Internet : l'API et la saisie clavier sont simulées (injection de dépendance).
