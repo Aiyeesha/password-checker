@@ -12,20 +12,39 @@ build-backend = "setuptools.build_meta"
 # ─────────────────────────────────────────────────────────────
 [project]
 name = "password-checker"
-version = "0.1.0"                  # Versionnage sémantique : MAJEUR.MINEUR.CORRECTIF
+# La version n'est plus écrite ici : elle est lue dans src/password_checker/__init__.py
+# (voir [tool.setuptools.dynamic] plus bas). Une seule source de vérité, aucun oubli possible.
+dynamic = ["version"]
 description = "Analyse de la robustesse des mots de passe et détection des fuites (k-anonymité HIBP)"
 readme = "README.md"
 requires-python = ">=3.11"         # Refuse l'installation sur un Python trop ancien
 license = "MIT"                    # Identifiant SPDX standard, le format recommandé
 authors = [{ name = "Aïcha Imène Dahoumane" }]
+keywords = ["password", "security", "entropy", "haveibeenpwned", "k-anonymity", "cybersecurity"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Information Technology",
+    "Natural Language :: French",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Security",
+]
 
-# Dépendances nécessaires au fonctionnement : aucune pour l'instant.
-# « requests » sera ajouté à l'étape sur l'API Have I Been Pwned.
+# Dépendances nécessaires au fonctionnement : AUCUNE.
+# Choix volontaire : la bibliothèque standard (urllib, hashlib…) suffit,
+# ce qui supprime tout risque lié à la chaîne d'approvisionnement logicielle.
 dependencies = []
 
 # Dépendances utiles seulement pour développer (installées avec « .[dev] »)
 [project.optional-dependencies]
 dev = ["pytest>=8"]
+
+# Liens affichés sur les index de paquets et dans les métadonnées
+[project.urls]
+Repository = "https://github.com/Aiyeesha/password-checker"
+Issues = "https://github.com/Aiyeesha/password-checker/issues"
+Changelog = "https://github.com/Aiyeesha/password-checker/blob/main/CHANGELOG.md"
 
 # ─────────────────────────────────────────────────────────────
 # Commande installée dans le terminal
@@ -36,11 +55,15 @@ dev = ["pytest>=8"]
 password-checker = "password_checker.cli:main"
 
 # ─────────────────────────────────────────────────────────────
-# 3. Emplacement du code
+# 3. Emplacement du code et version
 # ─────────────────────────────────────────────────────────────
-# Le paquet se trouve dans src/ (voir l'explication plus haut)
+# Le paquet se trouve dans src/
 [tool.setuptools.packages.find]
 where = ["src"]
+
+# La version est lue dans la variable __version__ du paquet
+[tool.setuptools.dynamic]
+version = { attr = "password_checker.__version__" }
 
 # ─────────────────────────────────────────────────────────────
 # 4. Configuration de pytest
