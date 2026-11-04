@@ -7,4 +7,4 @@ Ce fichier fait du dossier « password_checker » un paquet Python importable
 
 # SOURCE UNIQUE de la version : pyproject.toml la lit ici (voir [tool.setuptools.dynamic]).
 # Versionnage sémantique : MAJEUR.MINEUR.CORRECTIF
-__version__ = "1.0.0"
+__version__ = "1.1.0"
