@@ -4,7 +4,7 @@
 # Indique à pip comment installer le projet : ici avec setuptools,
 # l'outil standard le plus répandu
 [build-system]
-license = { text = "MIT" }
+requires = ["setuptools>=77"]      # La version 77 est la première à accepter le format SPDX de la licence
 build-backend = "setuptools.build_meta"
 
 # ─────────────────────────────────────────────────────────────
@@ -16,7 +16,7 @@ version = "0.1.0"                  # Versionnage sémantique : MAJEUR.MINEUR.COR
 description = "Analyse de la robustesse des mots de passe et détection des fuites (k-anonymité HIBP)"
 readme = "README.md"
 requires-python = ">=3.11"         # Refuse l'installation sur un Python trop ancien
-license = { text = "MIT" }
+license = "MIT"                    # Identifiant SPDX standard, le format recommandé
 authors = [{ name = "Aïcha Imène Dahoumane" }]
 
 # Dépendances nécessaires au fonctionnement : aucune pour l'instant.
