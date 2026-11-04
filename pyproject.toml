@@ -28,6 +28,14 @@ dependencies = []
 dev = ["pytest>=8"]
 
 # ─────────────────────────────────────────────────────────────
+# Commande installée dans le terminal
+# ─────────────────────────────────────────────────────────────
+# « password-checker » appellera la fonction main() du module cli.
+# pip crée pour cela un petit exécutable dans .venv\Scripts\.
+[project.scripts]
+password-checker = "password_checker.cli:main"
+
+# ─────────────────────────────────────────────────────────────
 # 3. Emplacement du code
 # ─────────────────────────────────────────────────────────────
 # Le paquet se trouve dans src/ (voir l'explication plus haut)
